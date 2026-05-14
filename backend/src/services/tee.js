@@ -1,7 +1,8 @@
 import { ethers } from 'ethers';
+import dotenv     from 'dotenv';
 import { hashString } from './hash.js';
-import dotenv from 'dotenv';
-dotenv.config();  // ← load .env at the top of THIS file too
+
+dotenv.config();
 
 let _teeWallet = null;
 
@@ -9,18 +10,17 @@ function getTeeWallet() {
   if (_teeWallet) return _teeWallet;
 
   const key = process.env.TEE_PRIVATE_KEY;
-
-  // Clear error message so you know exactly what went wrong
-  if (!key)            throw new Error('TEE_PRIVATE_KEY is not set in backend/.env');
+  if (!key)                  throw new Error('TEE_PRIVATE_KEY not set in backend/.env');
   if (!key.startsWith('0x')) throw new Error('TEE_PRIVATE_KEY must start with 0x');
-  if (key.length !== 66)     throw new Error(`TEE_PRIVATE_KEY wrong length: got ${key.length}, need 66`);
+  if (key.length !== 66)     throw new Error(`TEE_PRIVATE_KEY wrong length: ${key.length}`);
 
   _teeWallet = new ethers.Wallet(key);
+  console.log('[tee] Wallet loaded:', _teeWallet.address);
   return _teeWallet;
 }
 
 export async function createAttestation({ contentHash, promptHash, modelId }) {
-  const teeWallet = getTeeWallet();  // ← get wallet here, not at import time
+  const teeWallet = getTeeWallet();
 
   const payload = {
     contentHash,
@@ -31,6 +31,7 @@ export async function createAttestation({ contentHash, promptHash, modelId }) {
     version:    '1.0',
   };
 
+  // Sort keys for deterministic serialization
   const message   = JSON.stringify(payload, Object.keys(payload).sort());
   const signature = await teeWallet.signMessage(message);
 

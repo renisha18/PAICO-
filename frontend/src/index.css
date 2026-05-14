@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --accent:    #00ff99;
+  --accent-2:  #00ccff;
+  --bg:        #0a0a0a;
+  --card:      #111111;
+  --border:    #222222;
+  --text:      #ffffff;
+  --muted:     #999999;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color:      var(--text);
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  min-height:  100vh;
+}
+
+/* Neon glow on accent elements */
+.glow {
+  text-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent);
+}
+
+.glow-border {
+  box-shadow: 0 0 0 1px var(--accent), 0 0 12px rgba(0,255,153,0.15);
+}
+
+/* Cyber card */
+.cyber-card {
+  background:    var(--card);
+  border:        1px solid var(--border);
+  border-radius: 8px;
+}
+
+/* Status indicators */
+.status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
