@@ -7,7 +7,7 @@ module.exports = {
     "0g-testnet": {
       url: process.env.OG_RPC_URL || "https://evmrpc-testnet.0g.ai",
       accounts: [process.env.DEPLOYER_PRIVATE_KEY],
-      chainId: 16600,
+      chainId: 16602,
     }
   }
 };
