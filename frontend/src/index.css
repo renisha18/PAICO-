@@ -1,45 +1,74 @@
+@import '@fontsource/orbitron/400.css';
+@import '@fontsource/orbitron/700.css';
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --accent:    #00ff99;
-  --accent-2:  #00ccff;
-  --bg:        #0a0a0a;
-  --card:      #111111;
-  --border:    #222222;
-  --text:      #ffffff;
-  --muted:     #999999;
+  --bg:           #09131f;
+  --bg-secondary: #111c2d;
+  --card:         #132238;
+  --card-light:   #1b2d47;
+  --gold:         #d4af37;
+  --gold-soft:    #f0d36b;
+  --blue:         #1e3a5f;
+  --blue-light:   #2b4f7d;
+  --cyan:         #5fd1ff;
+  --text:         #f5f7fa;
+  --muted:        #8fa3bf;
+  --success:      #32d583;
+  --danger:       #ff5c7a;
 }
 
-* { box-sizing: border-box; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  background: var(--bg);
-  color:      var(--text);
-  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  background:  var(--bg);
+  color:       var(--text);
+  font-family: 'Inter', sans-serif;
   min-height:  100vh;
+  overflow-x:  hidden;
 }
 
-/* Neon glow on accent elements */
-.glow {
-  text-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent);
+h1, h2, h3, .font-display {
+  font-family: 'Orbitron', monospace;
 }
 
-.glow-border {
-  box-shadow: 0 0 0 1px var(--accent), 0 0 12px rgba(0,255,153,0.15);
+/* Glassmorphism card */
+.glass {
+  background:    rgba(19, 34, 56, 0.7);
+  backdrop-filter: blur(12px);
+  border:        1px solid rgba(212, 175, 55, 0.15);
+  border-radius: 12px;
 }
 
-/* Cyber card */
-.cyber-card {
-  background:    var(--card);
-  border:        1px solid var(--border);
-  border-radius: 8px;
+/* Gold gradient border */
+.gold-border {
+  border: 1px solid transparent;
+  background-clip: padding-box;
+  position: relative;
+}
+.gold-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, #d4af37 0%, transparent 50%, #5fd1ff 100%);
+  z-index: -1;
 }
 
-/* Status indicators */
-.status-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  display: inline-block;
-}
+/* Glow effects */
+.glow-gold { box-shadow: 0 0 20px rgba(212,175,55,0.2); }
+.glow-cyan { box-shadow: 0 0 20px rgba(95,209,255,0.2); }
+.text-gold  { color: var(--gold); }
+.text-cyan  { color: var(--cyan); }
+.text-muted { color: var(--muted); }
+
+/* Scrollbar */
+::-webkit-scrollbar       { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--blue-light); border-radius: 3px; }
