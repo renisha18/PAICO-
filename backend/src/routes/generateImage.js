@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { hashBuffer, hashString } from '../services/hash.js';
 import { createAttestation } from '../services/tee.js';
 import { uploadToStorage } from '../services/storage.js';
-import { generateImage } from '../services/imageGen.js';
+import { generateImageBuffer } from '../services/imageGen.js';
 
 const router = Router();
 
@@ -13,9 +13,19 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: 'Prompt required' });
     }
 
-    const modelId = process.env.IMAGE_MODEL || 'flux-schnell';
-
-    const { imageBuffer, imageUrl, width, height } = await generateImage(prompt);
+    const {
+      imageBuffer,
+      imageUrl,
+      width,
+      height,
+      mimeType,
+      provider,
+      teeVerified,
+    } = await generateImageBuffer(prompt);
+    
+    const modelId = teeVerified
+      ? `0g-compute/${process.env.IMAGE_MODEL}`
+      : `pollinations/${process.env.IMAGE_MODEL || 'flux'}`;
 
     const contentHash = hashBuffer(imageBuffer);
     const promptHash = hashString(prompt);
