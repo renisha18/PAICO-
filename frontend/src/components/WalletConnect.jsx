@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { ethers }   from 'ethers';
-import { Wallet }   from 'lucide-react';
 
-const CHAIN_ID = parseInt(import.meta.env.VITE_CHAIN_ID);
+const CHAIN_ID = 16602;
 const OG_RPC   = import.meta.env.VITE_OG_RPC_URL;
 
 export default function WalletConnect({ onConnected }) {
@@ -14,7 +13,7 @@ export default function WalletConnect({ onConnected }) {
     setError(null);
     setLoading(true);
     try {
-      if (!window.ethereum) throw new Error('MetaMask not found');
+      if (!window.ethereum) throw new Error('MetaMask not installed');
 
       const provider = new ethers.BrowserProvider(window.ethereum);
 
@@ -28,21 +27,22 @@ export default function WalletConnect({ onConnected }) {
           await window.ethereum.request({
             method: 'wallet_addEthereumChain',
             params: [{
-              chainId:           `0x${CHAIN_ID.toString(16)}`,
-              chainName:         '0G Testnet',
-              rpcUrls:           [OG_RPC],
-              nativeCurrency:    { name: '0G', symbol: 'OG', decimals: 18 },
-              blockExplorerUrls: ['https://chainscan-galileo.0g.ai'],
+              chainId:        `0x${CHAIN_ID.toString(16)}`,
+              chainName:      '0G Testnet',
+              rpcUrls:        [OG_RPC],
+              nativeCurrency: { name: '0G', symbol: 'OG', decimals: 18 },
             }],
           });
-        } else throw switchErr;
+        } else {
+          throw switchErr;
+        }
       }
 
       const signer = await provider.getSigner();
       const addr   = await signer.getAddress();
+
       setAddress(addr);
       onConnected(signer, addr);
-
     } catch (err) {
       setError(err.message);
     } finally {
@@ -50,39 +50,98 @@ export default function WalletConnect({ onConnected }) {
     }
   }
 
-  if (address) return (
-    <div className="flex items-center gap-2 px-3 py-2 rounded-lg"
-         style={{
-           background: 'rgba(212,175,55,0.1)',
-           border:     '1px solid rgba(212,175,55,0.25)',
-         }}>
-      <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
-      <span className="font-mono text-xs" style={{ color: '#d4af37' }}>
-        {address.slice(0, 6)}…{address.slice(-4)}
-      </span>
-    </div>
-  );
+  if (address) {
+    return (
+      <div style={{
+        display:      'flex',
+        alignItems:   'center',
+        gap:          '8px',
+        padding:      '8px 14px',
+        borderRadius: '8px',
+        background:   'rgba(34, 197, 94, 0.08)',
+        border:       '1px solid rgba(34, 197, 94, 0.25)',
+      }}>
+        <div style={{
+          width:        '7px',
+          height:       '7px',
+          borderRadius: '50%',
+          background:   '#22c55e',
+          boxShadow:    '0 0 6px #22c55e',
+          flexShrink:   0,
+          animation:    'pulse-dot 2s infinite',
+        }} />
+        <span style={{
+          fontFamily:    'JetBrains Mono, monospace',
+          fontSize:      '12px',
+          color:         '#f8fafc',
+          letterSpacing: '0.5px',
+        }}>
+          {address.slice(0, 6)}…{address.slice(-4)}
+        </span>
+        <style>{`
+          @keyframes pulse-dot {
+            0%, 100% { opacity: 1; box-shadow: 0 0 6px #22c55e; }
+            50%       { opacity: 0.6; box-shadow: 0 0 12px #22c55e; }
+          }
+        `}</style>
+      </div>
+    );
+  }
 
   return (
-    <div>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
       <button
         onClick={connect}
         disabled={loading}
-        className="flex items-center gap-2 px-4 py-2 rounded-lg
-                   font-display text-xs font-bold tracking-wider
-                   transition-all duration-200 disabled:opacity-50"
         style={{
-          background:  'linear-gradient(135deg, #d4af37, #b8961e)',
-          color:       '#09131f',
-          boxShadow:   '0 0 16px rgba(212,175,55,0.25)',
+          display:       'flex',
+          alignItems:    'center',
+          gap:           '8px',
+          padding:       '9px 18px',
+          borderRadius:  '8px',
+          fontFamily:    'Orbitron, monospace',
+          fontSize:      '11px',
+          fontWeight:    700,
+          letterSpacing: '2px',
+          cursor:        loading ? 'not-allowed' : 'pointer',
+          opacity:       loading ? 0.6 : 1,
+          background:    loading
+            ? 'rgba(212, 175, 55, 0.4)'
+            : 'linear-gradient(135deg, #d4af37, #b8961e)',
+          color:         '#08111f',
+          border:        'none',
+          boxShadow:     '0 0 16px rgba(212, 175, 55, 0.25)',
+          transition:    'all 0.2s',
+          whiteSpace:    'nowrap',
         }}
       >
-        <Wallet size={14} />
+        <svg
+          width="13"
+          height="13"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <rect x="2" y="5" width="20" height="14" rx="2" />
+          <path d="M16 12h.01" />
+        </svg>
         {loading ? 'CONNECTING…' : 'CONNECT WALLET'}
       </button>
+
       {error && (
-        <p className="text-xs mt-1" style={{ color: '#ff5c7a' }}>
-          {error}
+        <p style={{
+          marginTop:  '6px',
+          fontSize:   '11px',
+          fontFamily: 'JetBrains Mono, monospace',
+          color:      '#ef4444',
+          maxWidth:   '220px',
+          textAlign:  'right',
+          lineHeight: 1.4,
+        }}>
+          {error.length > 60 ? error.slice(0, 60) + '…' : error}
         </p>
       )}
     </div>

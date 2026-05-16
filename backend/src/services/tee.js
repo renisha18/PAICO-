@@ -19,7 +19,7 @@ function getTeeWallet() {
   return _teeWallet;
 }
 
-export async function createAttestation({ contentHash, promptHash, modelId }) {
+export async function createAttestation({ contentHash, promptHash, modelId, contentType }) {
   const teeWallet = getTeeWallet();
 
   const payload = {
@@ -30,6 +30,7 @@ export async function createAttestation({ contentHash, promptHash, modelId }) {
     timestamp:  Math.floor(Date.now() / 1000),
     version:    '1.0',
   };
+  if (contentType) payload.contentType = contentType;
 
   // Sort keys for deterministic serialization
   const message   = JSON.stringify(payload, Object.keys(payload).sort());

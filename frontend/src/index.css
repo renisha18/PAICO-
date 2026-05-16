@@ -2,73 +2,29 @@
 @import '@fontsource/orbitron/700.css';
 @import '@fontsource/inter/400.css';
 @import '@fontsource/inter/500.css';
-@import '@fontsource/inter/600.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --bg:           #09131f;
-  --bg-secondary: #111c2d;
-  --card:         #132238;
-  --card-light:   #1b2d47;
+  --bg:           #08111f;
+  --card:         #112240;
+  --card-lighter: #1a2f50;
   --gold:         #d4af37;
-  --gold-soft:    #f0d36b;
-  --blue:         #1e3a5f;
-  --blue-light:   #2b4f7d;
-  --cyan:         #5fd1ff;
-  --text:         #f5f7fa;
-  --muted:        #8fa3bf;
-  --success:      #32d583;
-  --danger:       #ff5c7a;
+  --cyan:         #60a5fa;
+  --success:      #22c55e;
+  --danger:       #ef4444;
+  --text:         #f8fafc;
+  --muted:        #94a3b8;
+  --border:       rgba(212, 175, 55, 0.15);
+  --font-display: 'Orbitron', monospace;
+  --font-body:    'Inter', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
 }
-
-* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  background:  var(--bg);
-  color:       var(--text);
+  background: #08111f;
+  color: #f8fafc;
   font-family: 'Inter', sans-serif;
-  min-height:  100vh;
-  overflow-x:  hidden;
 }
-
-h1, h2, h3, .font-display {
-  font-family: 'Orbitron', monospace;
-}
-
-/* Glassmorphism card */
-.glass {
-  background:    rgba(19, 34, 56, 0.7);
-  backdrop-filter: blur(12px);
-  border:        1px solid rgba(212, 175, 55, 0.15);
-  border-radius: 12px;
-}
-
-/* Gold gradient border */
-.gold-border {
-  border: 1px solid transparent;
-  background-clip: padding-box;
-  position: relative;
-}
-.gold-border::before {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  background: linear-gradient(135deg, #d4af37 0%, transparent 50%, #5fd1ff 100%);
-  z-index: -1;
-}
-
-/* Glow effects */
-.glow-gold { box-shadow: 0 0 20px rgba(212,175,55,0.2); }
-.glow-cyan { box-shadow: 0 0 20px rgba(95,209,255,0.2); }
-.text-gold  { color: var(--gold); }
-.text-cyan  { color: var(--cyan); }
-.text-muted { color: var(--muted); }
-
-/* Scrollbar */
-::-webkit-scrollbar       { width: 6px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--blue-light); border-radius: 3px; }

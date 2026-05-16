@@ -1,4 +1,4 @@
-import { CheckCircle, ExternalLink, Copy, Database } from 'lucide-react';
+import { Shield, ExternalLink, Copy, Database } from 'lucide-react';
 import VerifyQR from './VerifyQR.jsx';
 
 const EXPLORER = import.meta.env.VITE_OG_EXPLORER;
@@ -9,7 +9,7 @@ const CYAN = '#60a5fa';
 const GOLD = '#d4af37';
 const SUCCESS = '#22c55e';
 
-export default function ProvenanceCard({ result, txHash, tokenId }) {
+export default function ImageProvenanceCard({ result, txHash, tokenId }) {
   const { content, certificate, mintParams } = result;
 
   function copy(text) {
@@ -29,9 +29,11 @@ export default function ProvenanceCard({ result, txHash, tokenId }) {
         alignItems: 'center',
         justifyContent: 'space-between',
         marginBottom: '20px',
+        flexWrap: 'wrap',
+        gap: '10px',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <CheckCircle size={18} color={SUCCESS} />
+          <Shield size={20} color={SUCCESS} />
           <span style={{
             fontFamily: 'Orbitron, monospace',
             fontSize: '12px',
@@ -39,52 +41,76 @@ export default function ProvenanceCard({ result, txHash, tokenId }) {
             color: SUCCESS,
             letterSpacing: '2px',
           }}>
-            PROVENANCE MINTED
+            IMAGE PROVENANCE MINTED
           </span>
         </div>
-        {tokenId && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          {tokenId && (
+            <span style={{ fontSize: '11px', fontFamily: 'JetBrains Mono, monospace', color: TEXT_MUTED }}>
+              Token #{tokenId}
+            </span>
+          )}
           <span style={{
-            fontSize: '11px',
+            fontSize: '9px',
             fontFamily: 'JetBrains Mono, monospace',
-            color: TEXT_MUTED,
+            letterSpacing: '2px',
+            color: GOLD,
+            padding: '4px 10px',
+            borderRadius: '6px',
+            border: '1px solid rgba(212, 175, 55, 0.35)',
+            background: 'rgba(212, 175, 55, 0.08)',
           }}>
-            Token #{tokenId}
+            IMAGE
           </span>
-        )}
+        </div>
       </div>
 
       <div style={{
-        background: 'rgba(8, 17, 31, 0.5)',
-        border: '1px solid rgba(96, 165, 250, 0.1)',
+        position: 'relative',
         borderRadius: '8px',
-        padding: '16px',
-        marginBottom: '20px',
+        overflow: 'hidden',
+        border: '1px solid rgba(212, 175, 55, 0.3)',
+        marginBottom: '10px',
       }}>
-        <p style={{
-          fontSize: '10px',
-          letterSpacing: '3px',
-          color: TEXT_MUTED,
-          fontFamily: 'JetBrains Mono, monospace',
-          marginBottom: '10px',
+        <img
+          src={content.imageUrl}
+          alt="Attested generation"
+          style={{ width: '100%', display: 'block' }}
+        />
+        <div style={{
+          position: 'absolute',
+          bottom: '10px',
+          left: '10px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px',
+          background: 'rgba(0, 0, 0, 0.7)',
+          padding: '6px 10px',
+          borderRadius: '6px',
         }}>
-          GENERATED OUTPUT
-        </p>
-        <p style={{
-          fontSize: '14px',
-          color: TEXT_PRIMARY,
-          fontFamily: 'Inter, sans-serif',
-          lineHeight: 1.7,
-        }}>
-          {content.text}
-        </p>
+          <Shield size={14} color={SUCCESS} />
+          <span style={{
+            fontSize: '10px',
+            fontFamily: 'Orbitron, monospace',
+            fontWeight: 700,
+            letterSpacing: '1px',
+            color: '#f8fafc',
+          }}>
+            PAICO VERIFIED
+          </span>
+        </div>
       </div>
 
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '12px',
+      <p style={{
+        fontSize: '11px',
+        color: TEXT_MUTED,
+        fontFamily: 'Inter, sans-serif',
         marginBottom: '20px',
       }}>
+        Attested image — stored on 0G Storage
+      </p>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' }}>
         {[
           { label: 'CONTENT HASH', value: mintParams.contentHash },
           { label: 'CERTIFICATE HASH', value: mintParams.certificateHash },
@@ -123,14 +149,9 @@ export default function ProvenanceCard({ result, txHash, tokenId }) {
               </p>
             </div>
             <button
+              type="button"
               onClick={() => copy(value)}
-              style={{
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                padding: '2px',
-                flexShrink: 0,
-              }}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '2px', flexShrink: 0 }}
             >
               <Copy size={12} color={TEXT_MUTED} />
             </button>
@@ -146,26 +167,20 @@ export default function ProvenanceCard({ result, txHash, tokenId }) {
       }}>
         {[
           { label: 'MODEL', value: certificate.modelId },
-          {
-            label: 'TIMESTAMP',
-            value: new Date(certificate.timestamp * 1000).toLocaleString(),
-          },
+          { label: 'TIMESTAMP', value: new Date(certificate.timestamp * 1000).toLocaleString() },
           {
             label: 'TEE SIGNER',
             value: certificate.teeAddress
               ? `${certificate.teeAddress.slice(0, 10)}…`
               : '—',
           },
-          { label: 'STATUS', value: 'VERIFIED ✓', highlight: true },
+          { label: 'TYPE', value: 'IMAGE ✓', highlight: true },
         ].map(({ label, value, highlight }) => (
-          <div
-            key={label}
-            style={{
-              background: 'rgba(8, 17, 31, 0.4)',
-              borderRadius: '8px',
-              padding: '12px 14px',
-            }}
-          >
+          <div key={label} style={{
+            background: 'rgba(8, 17, 31, 0.4)',
+            borderRadius: '8px',
+            padding: '12px 14px',
+          }}>
             <p style={{
               fontSize: '9px',
               letterSpacing: '2px',
@@ -239,6 +254,7 @@ export default function ProvenanceCard({ result, txHash, tokenId }) {
         )}
 
         <button
+          type="button"
           onClick={() => copy(mintParams.contentHash)}
           style={{
             display: 'flex',
@@ -261,6 +277,17 @@ export default function ProvenanceCard({ result, txHash, tokenId }) {
       </div>
 
       <VerifyQR contentHash={mintParams.contentHash} />
+
+      <p style={{
+        marginTop: '12px',
+        fontSize: '10px',
+        color: TEXT_MUTED,
+        fontFamily: 'Inter, sans-serif',
+        lineHeight: 1.5,
+        textAlign: 'center',
+      }}>
+        This QR code links to public verification. Anyone can confirm this image's origin without trusting PAICO.
+      </p>
     </div>
   );
 }
