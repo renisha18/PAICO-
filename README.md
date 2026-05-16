@@ -1,3 +1,4 @@
+```mermaid
 flowchart TD
   U[USER] -->|Prompt / Upload / Verify Hash| FE[Frontend (React + Vite)]
   FE -->|Auth + Request| API[Backend API (Node.js + Express)]
@@ -38,6 +39,7 @@ Provenance Registry (Solidity)]
   VER -->|Fetch content + cert| STOR
   VER -->|Validate TEE cert + recompute hash| HASH
   VER -->|Result: VERIFIED or TAMPERED| FE
+```
 
   %% Tampering detection
   HASH -->|Mismatch ⇒ TAMPERED| VER
