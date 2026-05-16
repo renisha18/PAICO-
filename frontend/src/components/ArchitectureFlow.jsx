@@ -1,181 +1,164 @@
+import { Fragment } from 'react';
 import { motion } from 'framer-motion';
-import { Shield, Cpu, Database } from 'lucide-react';
+import { Cpu, Hash, Lock, Database, Link, ChevronRight } from 'lucide-react';
 
-export default function HeroSection({ onGetStarted }) {
+const STEPS = [
+  {
+    icon: Cpu,
+    label: 'AI INFERENCE',
+    desc: 'Text or image generated via 0G Compute',
+    color: '#d4af37',
+  },
+  {
+    icon: Hash,
+    label: 'SHA-256 HASH',
+    desc: 'Tamper-proof content fingerprint',
+    color: '#60a5fa',
+  },
+  {
+    icon: Lock,
+    label: 'TEE ATTESTATION',
+    desc: 'Hardware-signed provenance certificate',
+    color: '#d4af37',
+  },
+  {
+    icon: Database,
+    label: '0G STORAGE',
+    desc: 'Content and certificate stored permanently',
+    color: '#60a5fa',
+  },
+  {
+    icon: Link,
+    label: '0G CHAIN MINT',
+    desc: 'On-chain provenance NFT record',
+    color: '#22c55e',
+  },
+];
+
+export default function ArchitectureFlow() {
   return (
     <section style={{
-      minHeight:      '88vh',
-      display:        'flex',
-      flexDirection:  'column',
-      alignItems:     'center',
-      justifyContent: 'center',
-      textAlign:      'center',
-      padding:        '80px 24px 60px',
-      position:       'relative',
-      overflow:       'hidden',
+      padding:   '48px 24px 64px',
+      maxWidth:  '960px',
+      margin:    '0 auto',
+      textAlign: 'center',
     }}>
-
-      {/* Grid background */}
-      <div style={{
-        position:   'absolute', inset: 0, pointerEvents: 'none',
-        backgroundImage: `
-          linear-gradient(rgba(95,209,255,0.04) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(95,209,255,0.04) 1px, transparent 1px)
-        `,
-        backgroundSize: '48px 48px',
-      }} />
-
-      {/* Radial glow */}
-      <div style={{
-        position:   'absolute', top: '40%', left: '50%',
-        transform:  'translate(-50%, -50%)',
-        width:      '500px', height: '250px',
-        borderRadius: '50%', pointerEvents: 'none',
-        background: 'radial-gradient(ellipse, rgba(212,175,55,0.07) 0%, transparent 70%)',
-      }} />
-
-      {/* Live badge */}
-      <motion.div
-        initial={{ opacity: 0, y: -12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        style={{
-          display:      'inline-flex', alignItems: 'center', gap: '8px',
-          padding:      '6px 16px', borderRadius: '99px', marginBottom: '28px',
-          background:   'rgba(212,175,55,0.1)',
-          border:       '1px solid rgba(212,175,55,0.3)',
-          color:        '#d4af37', fontSize: '11px',
-          fontFamily:   'monospace', letterSpacing: '3px',
-        }}
-      >
-        <span style={{
-          width: '6px', height: '6px', borderRadius: '50%',
-          background: '#32d583',
-          boxShadow: '0 0 6px #32d583',
-          display: 'inline-block',
-          animation: 'pulse 2s infinite',
-        }} />
-        LIVE ON 0G TESTNET
-      </motion.div>
-
-      {/* Headline */}
-      <motion.h1
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.1 }}
-        style={{
-          fontFamily:  'Orbitron, monospace',
-          fontSize:    'clamp(32px, 6vw, 56px)',
-          fontWeight:  700, lineHeight: 1.2,
-          marginBottom:'16px', letterSpacing: '2px',
-        }}
-      >
-        <span style={{ color: '#f5f7fa' }}>PROVE </span>
-        <span style={{
-          background: 'linear-gradient(135deg, #d4af37, #f0d36b)',
-          WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-        }}>
-          AI ORIGIN.
-        </span>
-        <br />
-        <span style={{ color: '#f5f7fa' }}>VERIFY </span>
-        <span style={{ color: '#5fd1ff' }}>AUTHENTICITY.</span>
-      </motion.h1>
-
-      {/* Subtext */}
       <motion.p
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.4 }}
         style={{
-          color:       '#8fa3bf', fontSize: '15px',
-          maxWidth:    '520px', marginBottom: '36px',
-          lineHeight:  1.7, fontFamily: 'Inter, sans-serif',
+          fontSize:      '10px',
+          letterSpacing: '4px',
+          color:         '#94a3b8',
+          fontFamily:    'JetBrains Mono, monospace',
+          marginBottom:  '8px',
         }}
       >
-        Cryptographic birth certificates for AI-generated content —
-        powered by TEE attestation, 0G Storage, and on-chain provenance.
+        SYSTEM ARCHITECTURE
       </motion.p>
 
-      {/* CTA buttons */}
-      <motion.div
+      <motion.h2
         initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-        style={{ display: 'flex', gap: '12px', flexWrap: 'wrap',
-                 justifyContent: 'center', marginBottom: '56px' }}
-      >
-        <button
-          onClick={onGetStarted}
-          style={{
-            padding:     '12px 28px', borderRadius: '8px',
-            fontFamily:  'Orbitron, monospace', fontSize: '12px',
-            fontWeight:  700, letterSpacing: '2px',
-            background:  'linear-gradient(135deg, #d4af37, #b8961e)',
-            color:       '#09131f', border: 'none', cursor: 'pointer',
-            boxShadow:   '0 0 24px rgba(212,175,55,0.3)',
-            transition:  'box-shadow 0.2s',
-          }}
-        >
-          GENERATE + ATTEST
-        </button>
-        <button
-          onClick={onGetStarted}
-          style={{
-            padding:    '12px 28px', borderRadius: '8px',
-            fontFamily: 'Orbitron, monospace', fontSize: '12px',
-            fontWeight: 700, letterSpacing: '2px',
-            background: 'transparent',
-            border:     '1px solid rgba(95,209,255,0.4)',
-            color:      '#5fd1ff', cursor: 'pointer',
-            transition: 'background 0.2s',
-          }}
-        >
-          VERIFY CONTENT
-        </button>
-      </motion.div>
-
-      {/* Stats */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.4 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: 0.05 }}
         style={{
-          display:       'flex', gap: '40px',
-          flexWrap:      'wrap', justifyContent: 'center',
+          fontFamily:    'Orbitron, monospace',
+          fontSize:      'clamp(18px, 3vw, 24px)',
+          fontWeight:    700,
+          color:         '#f8fafc',
+          letterSpacing: '2px',
+          marginBottom:  '36px',
         }}
       >
-        {[
-          { icon: Shield,   label: 'TEE Attested',     value: '100%',  color: '#d4af37' },
-          { icon: Cpu,      label: '0G Chain Records', value: 'LIVE',  color: '#5fd1ff' },
-          { icon: Database, label: 'Storage Proofs',   value: '0G',    color: '#32d583' },
-        ].map(({ icon: Icon, label, value, color }) => (
-          <div key={label} style={{
-            display:       'flex', flexDirection: 'column',
-            alignItems:    'center', gap: '6px',
-          }}>
-            <div style={{
-              display:        'flex', alignItems: 'center',
-              gap:            '6px',
-            }}>
-              <Icon size={14} color={color} />
-              <span style={{
-                fontFamily: 'Orbitron, monospace',
-                fontSize:   '18px', fontWeight: 700, color,
-              }}>
-                {value}
-              </span>
-            </div>
-            <span style={{
-              fontSize:    '10px', color: '#8fa3bf',
-              letterSpacing: '2px', fontFamily: 'monospace',
-            }}>
-              {label}
-            </span>
-          </div>
-        ))}
-      </motion.div>
+        PROVENANCE PIPELINE
+      </motion.h2>
 
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+        style={{
+          display:        'flex',
+          flexWrap:       'wrap',
+          alignItems:     'center',
+          justifyContent: 'center',
+          gap:            '8px',
+        }}
+      >
+        {STEPS.map((step, i) => {
+          const Icon = step.icon;
+          return (
+            <Fragment key={step.label}>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: 0.12 + i * 0.06 }}
+                whileHover={{ y: -2 }}
+                style={{
+                  width:        '168px',
+                  padding:      '20px 16px',
+                  borderRadius: '12px',
+                  background:   '#112240',
+                  border:       '1px solid rgba(212, 175, 55, 0.15)',
+                  textAlign:    'left',
+                }}
+              >
+                <motion.div
+                  animate={{ boxShadow: [
+                    `0 0 0px ${step.color}00`,
+                    `0 0 14px ${step.color}44`,
+                    `0 0 0px ${step.color}00`,
+                  ] }}
+                  transition={{ duration: 2.5, repeat: Infinity, delay: i * 0.4 }}
+                  style={{
+                    width:          '36px',
+                    height:         '36px',
+                    borderRadius:   '8px',
+                    display:        'flex',
+                    alignItems:     'center',
+                    justifyContent: 'center',
+                    marginBottom:   '12px',
+                    background:     `${step.color}18`,
+                    border:         `1px solid ${step.color}44`,
+                  }}
+                >
+                  <Icon size={18} color={step.color} />
+                </motion.div>
+                <p style={{
+                  fontFamily:    'Orbitron, monospace',
+                  fontSize:      '10px',
+                  fontWeight:    700,
+                  letterSpacing: '1px',
+                  color:         step.color,
+                  marginBottom:  '6px',
+                }}>
+                  {step.label}
+                </p>
+                <p style={{
+                  fontSize:   '11px',
+                  color:      '#94a3b8',
+                  lineHeight: 1.5,
+                  fontFamily: 'Inter, sans-serif',
+                }}>
+                  {step.desc}
+                </p>
+              </motion.div>
+
+              {i < STEPS.length - 1 && (
+                <ChevronRight
+                  size={18}
+                  style={{ color: 'rgba(212, 175, 55, 0.35)', flexShrink: 0 }}
+                />
+              )}
+            </Fragment>
+          );
+        })}
+      </motion.div>
     </section>
   );
 }
