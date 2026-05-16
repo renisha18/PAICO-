@@ -1,4 +1,7 @@
-import { Shield, ExternalLink, Copy, Database } from 'lucide-react';
+import { useState } from 'react';
+import {
+  Shield, ExternalLink, Copy, Check, Database, Download,
+} from 'lucide-react';
 import VerifyQR from './VerifyQR.jsx';
 
 const EXPLORER = import.meta.env.VITE_OG_EXPLORER;
@@ -12,8 +15,31 @@ const SUCCESS = '#22c55e';
 export default function ImageProvenanceCard({ result, txHash, tokenId }) {
   const { content, certificate, mintParams } = result;
 
-  function copy(text) {
+  const [copied, setCopied] = useState({});
+
+  function copy(key, text) {
     navigator.clipboard.writeText(text);
+    setCopied(prev => ({ ...prev, [key]: true }));
+    setTimeout(() => {
+      setCopied(prev => ({ ...prev, [key]: false }));
+    }, 2000);
+  }
+
+  async function downloadImage(imageUrl, contentHash) {
+    try {
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = objectUrl;
+      link.download = `paico-attested-${contentHash.slice(0, 8)}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+    } catch {
+      window.open(imageUrl, '_blank');
+    }
   }
 
   return (
@@ -112,10 +138,10 @@ export default function ImageProvenanceCard({ result, txHash, tokenId }) {
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' }}>
         {[
-          { label: 'CONTENT HASH', value: mintParams.contentHash },
-          { label: 'CERTIFICATE HASH', value: mintParams.certificateHash },
-          { label: 'STORAGE ROOT', value: mintParams.storageRoot },
-        ].map(({ label, value }) => (
+          { label: 'CONTENT HASH', copyKey: 'contentHash', value: mintParams.contentHash },
+          { label: 'CERTIFICATE HASH', copyKey: 'certHash', value: mintParams.certificateHash },
+          { label: 'STORAGE ROOT', copyKey: 'storageRoot', value: mintParams.storageRoot },
+        ].map(({ label, copyKey, value }) => (
           <div
             key={label}
             style={{
@@ -150,10 +176,24 @@ export default function ImageProvenanceCard({ result, txHash, tokenId }) {
             </div>
             <button
               type="button"
-              onClick={() => copy(value)}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '2px', flexShrink: 0 }}
+              onClick={() => copy(copyKey, value)}
+              style={{
+                background: copied[copyKey] ? 'rgba(34, 197, 94, 0.1)' : 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '4px 8px',
+                borderRadius: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                fontSize: '9px',
+                fontFamily: 'monospace',
+                color: copied[copyKey] ? SUCCESS : TEXT_MUTED,
+                transition: 'all 0.2s',
+                flexShrink: 0,
+              }}
             >
-              <Copy size={12} color={TEXT_MUTED} />
+              {copied[copyKey] ? <><Check size={11} /> COPIED!</> : <><Copy size={11} /></>}
             </button>
           </div>
         ))}
@@ -255,7 +295,7 @@ export default function ImageProvenanceCard({ result, txHash, tokenId }) {
 
         <button
           type="button"
-          onClick={() => copy(mintParams.contentHash)}
+          onClick={() => copy('mainHash', mintParams.contentHash)}
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -266,13 +306,38 @@ export default function ImageProvenanceCard({ result, txHash, tokenId }) {
             fontFamily: 'JetBrains Mono, monospace',
             letterSpacing: '1px',
             cursor: 'pointer',
-            background: 'rgba(148, 163, 184, 0.08)',
-            border: '1px solid rgba(148, 163, 184, 0.2)',
-            color: TEXT_MUTED,
+            background: copied.mainHash ? 'rgba(34, 197, 94, 0.1)' : 'rgba(148, 163, 184, 0.08)',
+            border: copied.mainHash ? '1px solid rgba(34, 197, 94, 0.3)' : '1px solid rgba(148, 163, 184, 0.2)',
+            color: copied.mainHash ? SUCCESS : TEXT_MUTED,
+            transition: 'all 0.2s',
           }}
         >
-          <Copy size={11} />
-          COPY HASH
+          {copied.mainHash ? <><Check size={11} /> COPIED!</> : <><Copy size={11} /> COPY HASH</>}
+        </button>
+
+        <button
+          type="button"
+          onClick={() => downloadImage(content.imageUrl, mintParams.contentHash)}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            padding: '8px 14px',
+            borderRadius: '6px',
+            fontSize: '10px',
+            fontFamily: 'Orbitron, monospace',
+            letterSpacing: '1px',
+            cursor: 'pointer',
+            background: 'rgba(34, 197, 94, 0.08)',
+            border: '1px solid rgba(34, 197, 94, 0.3)',
+            color: SUCCESS,
+            transition: 'background 0.2s',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(34, 197, 94, 0.15)'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'rgba(34, 197, 94, 0.08)'; }}
+        >
+          <Download size={11} />
+          DOWNLOAD IMAGE
         </button>
       </div>
 

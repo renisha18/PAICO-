@@ -1,4 +1,5 @@
-import { CheckCircle, ExternalLink, Copy, Database } from 'lucide-react';
+import { useState } from 'react';
+import { CheckCircle, ExternalLink, Copy, Check, Database } from 'lucide-react';
 import VerifyQR from './VerifyQR.jsx';
 
 const EXPLORER = import.meta.env.VITE_OG_EXPLORER;
@@ -12,8 +13,14 @@ const SUCCESS = '#22c55e';
 export default function ProvenanceCard({ result, txHash, tokenId }) {
   const { content, certificate, mintParams } = result;
 
-  function copy(text) {
+  const [copied, setCopied] = useState({});
+
+  function copy(key, text) {
     navigator.clipboard.writeText(text);
+    setCopied(prev => ({ ...prev, [key]: true }));
+    setTimeout(() => {
+      setCopied(prev => ({ ...prev, [key]: false }));
+    }, 2000);
   }
 
   return (
@@ -86,10 +93,10 @@ export default function ProvenanceCard({ result, txHash, tokenId }) {
         marginBottom: '20px',
       }}>
         {[
-          { label: 'CONTENT HASH', value: mintParams.contentHash },
-          { label: 'CERTIFICATE HASH', value: mintParams.certificateHash },
-          { label: 'STORAGE ROOT', value: mintParams.storageRoot },
-        ].map(({ label, value }) => (
+          { label: 'CONTENT HASH', copyKey: 'contentHash', value: mintParams.contentHash },
+          { label: 'CERTIFICATE HASH', copyKey: 'certHash', value: mintParams.certificateHash },
+          { label: 'STORAGE ROOT', copyKey: 'storageRoot', value: mintParams.storageRoot },
+        ].map(({ label, copyKey, value }) => (
           <div
             key={label}
             style={{
@@ -123,16 +130,25 @@ export default function ProvenanceCard({ result, txHash, tokenId }) {
               </p>
             </div>
             <button
-              onClick={() => copy(value)}
+              type="button"
+              onClick={() => copy(copyKey, value)}
               style={{
-                background: 'none',
+                background: copied[copyKey] ? 'rgba(34, 197, 94, 0.1)' : 'transparent',
                 border: 'none',
                 cursor: 'pointer',
-                padding: '2px',
+                padding: '4px 8px',
+                borderRadius: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                fontSize: '9px',
+                fontFamily: 'monospace',
+                color: copied[copyKey] ? SUCCESS : TEXT_MUTED,
+                transition: 'all 0.2s',
                 flexShrink: 0,
               }}
             >
-              <Copy size={12} color={TEXT_MUTED} />
+              {copied[copyKey] ? <><Check size={11} /> COPIED!</> : <><Copy size={11} /></>}
             </button>
           </div>
         ))}
@@ -239,7 +255,8 @@ export default function ProvenanceCard({ result, txHash, tokenId }) {
         )}
 
         <button
-          onClick={() => copy(mintParams.contentHash)}
+          type="button"
+          onClick={() => copy('mainHash', mintParams.contentHash)}
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -250,13 +267,13 @@ export default function ProvenanceCard({ result, txHash, tokenId }) {
             fontFamily: 'JetBrains Mono, monospace',
             letterSpacing: '1px',
             cursor: 'pointer',
-            background: 'rgba(148, 163, 184, 0.08)',
-            border: '1px solid rgba(148, 163, 184, 0.2)',
-            color: TEXT_MUTED,
+            background: copied.mainHash ? 'rgba(34, 197, 94, 0.1)' : 'rgba(148, 163, 184, 0.08)',
+            border: copied.mainHash ? '1px solid rgba(34, 197, 94, 0.3)' : '1px solid rgba(148, 163, 184, 0.2)',
+            color: copied.mainHash ? SUCCESS : TEXT_MUTED,
+            transition: 'all 0.2s',
           }}
         >
-          <Copy size={11} />
-          COPY HASH
+          {copied.mainHash ? <><Check size={11} /> COPIED!</> : <><Copy size={11} /> COPY HASH</>}
         </button>
       </div>
 

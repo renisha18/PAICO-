@@ -4,6 +4,7 @@ import ArchitectureFlow      from './components/ArchitectureFlow.jsx';
 import WalletConnect         from './components/WalletConnect.jsx';
 import GenerateTabs            from './components/GenerateTabs.jsx';
 import VerifyPanel           from './components/VerifyPanel.jsx';
+import RecentActivity        from './components/RecentActivity.jsx';
 
 const pathParts    = window.location.pathname.split('/');
 const isVerifyPage = pathParts[1] === 'verify';
@@ -220,6 +221,10 @@ export default function App() {
         }
 
       </main>
+
+      <div style={{ maxWidth: '780px', margin: '0 auto', padding: '0 24px 60px' }}>
+        <RecentActivity refreshTrigger={mintCount} />
+      </div>
 
       <footer style={{
         borderTop: '1px solid rgba(212, 175, 55, 0.15)',
